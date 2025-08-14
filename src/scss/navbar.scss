@@ -1,0 +1,382 @@
+// Variables
+$primary-color: #6366f1; // Indigo for modern accents
+$secondary-color: #ffffff; // White for light mode
+$dark-bg: #1f2937; // Dark gray for dark mode
+$dark-text: #d1d5db; // Light gray for dark mode text
+$accent-color: #e5e7eb; // Light gray for hover
+$text-color: #111827; // Dark gray for text
+$hover-color: #4f46e5; // Darker indigo for hover
+$border-color: #e5e7eb; // Light border
+$font-family: "Inter", sans-serif; // Clean, modern font
+$navbar-height: 64px;
+$spacing-unit: 8px;
+
+// Navbar container
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: $navbar-height;
+  padding: 0 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: $font-family;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &.light {
+    background-color: $secondary-color;
+    color: $text-color;
+  }
+  &.dark {
+    background-color: $dark-bg;
+    color: $dark-text;
+  }
+}
+
+// Navbar sections
+.navbar-left, .navbar-center, .navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+// Navbar left (menu + logo)
+.navbar-left {
+  gap: $spacing-unit * 1.5;
+  .menu-icon {
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+    &:hover {
+      color: $hover-color;
+      transform: scale(1.1);
+    }
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-unit;
+    .logo-imgN {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+    span {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// Navbar center (search + links)
+.navbar-center {
+  flex: 1;
+  gap: $spacing-unit * 2;
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: $accent-color;
+    border-radius: 8px;
+    padding: $spacing-unit 12px;
+    width: 240px;
+    transition: background-color 0.3s ease;
+    .navbar.dark & {
+      background-color: #374151;
+    }
+    .search-icon {
+      font-size: 1.2rem;
+      color: $text-color;
+      .navbar.dark & {
+        color: $dark-text;
+      }
+    }
+    .search-input {
+      border: none;
+      background: none;
+      margin-left: $spacing-unit;
+      font-size: 0.9rem;
+      width: 100%;
+      color: $text-color;
+      .navbar.dark & {
+        color: $dark-text;
+      }
+      &::placeholder {
+        color: #9ca3af;
+      }
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+  .nav-links {
+    display: flex;
+    gap: $spacing-unit * 2;
+    .nav-link {
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: $spacing-unit * 0.75 $spacing-unit;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      &:hover {
+        background-color: $accent-color;
+        color: $hover-color;
+        .navbar.dark & {
+          background-color: #374151;
+        }
+      }
+      &.active {
+        background: linear-gradient(90deg, $primary-color, $hover-color);
+        color: $secondary-color;
+      }
+    }
+  }
+}
+
+// Navbar right (notifications, theme, user)
+.navbar-right {
+  gap: $spacing-unit * 1.5;
+  .notification {
+    position: relative;
+    cursor: pointer;
+    .notification-icon {
+      font-size: 1.4rem;
+      transition: color 0.3s ease, transform 0.2s ease;
+      &:hover {
+        color: $hover-color;
+        transform: scale(1.1);
+      }
+    }
+    .notification-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background-color: #ef4444;
+      color: $secondary-color;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 50%;
+      padding: 2px 6px;
+      line-height: 1;
+    }
+  }
+  .theme-toggle {
+    cursor: pointer;
+    padding: $spacing-unit * 0.5;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: $accent-color;
+      .navbar.dark & {
+        background-color: #374151;
+      }
+    }
+    .theme-icon {
+      font-size: 1.4rem;
+      transition: color 0.3s ease;
+      &:hover {
+        color: $hover-color;
+      }
+    }
+  }
+  .user-section {
+    position: relative;
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: $spacing-unit;
+      cursor: pointer;
+      padding: $spacing-unit * 0.75;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      &:hover {
+        background-color: $accent-color;
+        .navbar.dark & {
+          background-color: #374151;
+        }
+      }
+      .profile-photo {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid $primary-color;
+        transition: transform 0.3s ease;
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+      .username {
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: $secondary-color;
+      .navbar.dark & {
+        background-color: $dark-bg;
+      }
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      min-width: 180px;
+      z-index: 1001;
+      animation: slideDown 0.2s ease-in-out;
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: $spacing-unit;
+        padding: $spacing-unit * 1.5;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        &:hover {
+          background-color: $accent-color;
+          color: $hover-color;
+          .navbar.dark & {
+            background-color: #374151;
+          }
+        }
+        .dropdown-icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
+
+// Dropdown animation
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: $spacing-unit * 1.5;
+    gap: $spacing-unit;
+  }
+  .navbar-left {
+    justify-content: center;
+    .menu-icon {
+      font-size: 1.5rem;
+    }
+    .logo {
+      .logo-imgN {
+        height: 32px;
+      }
+      span {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  .navbar-center {
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-unit;
+    .search-bar {
+      width: 100%;
+      max-width: 300px;
+    }
+    .nav-links {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: $spacing-unit;
+      .nav-link {
+        font-size: 0.9rem;
+        padding: $spacing-unit * 0.5;
+      }
+    }
+  }
+  .navbar-right {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-unit;
+    .notification, .theme-toggle {
+      padding: $spacing-unit * 0.5;
+    }
+    .user-section {
+      .user-profile {
+        flex-direction: row;
+        .profile-photo {
+          width: 32px;
+          height: 32px;
+        }
+        .username {
+          font-size: 0.9rem;
+        }
+      }
+      .dropdown-menu {
+        min-width: 160px;
+        .dropdown-item {
+          padding: $spacing-unit * 1.2;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: $spacing-unit;
+  }
+  .navbar-left {
+    .menu-icon {
+      font-size: 1.4rem;
+    }
+    .logo {
+      .logo-imgN {
+        height: 28px;
+      }
+      span {
+        font-size: 1rem;
+      }
+    }
+  }
+  .navbar-center {
+    .search-bar {
+      max-width: 200px;
+    }
+    .nav-links {
+      .nav-link {
+        font-size: 0.85rem;
+      }
+    }
+  }
+  .navbar-right {
+    .notification .notification-icon, .theme_toggle .theme-icon {
+      font-size: 1.3rem;
+    }
+    .user-section {
+      .user-profile {
+        .profile-photo {
+          width: 28px;
+          height: 28px;
+        }
+        .username {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}

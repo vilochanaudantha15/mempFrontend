@@ -1,0 +1,156 @@
+// ProfileCard.scss
+.profile-card {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f2f5;
+  transition: box-shadow 0.3s ease;
+  font-family: 'Arial', sans-serif;
+
+  margin-top: 50px;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .profile-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+
+    .avatar-container {
+      position: relative;
+
+      .avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px solid #f0f2f5;
+      }
+
+      .status-indicator {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+
+        &.active {
+          background: #28a745;
+        }
+        &.inactive {
+          background: #dc3545;
+        }
+        &.away {
+          background: #ffc107;
+        }
+      }
+    }
+
+    .header-info {
+      .name {
+        margin: 0;
+        font-size: 20px;
+        color: #1a2b49;
+        font-weight: 600;
+      }
+
+      .position {
+        margin: 4px 0 0;
+        color: #4a5b78;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .department {
+        margin: 2px 0 0;
+        color: #6c829d;
+        font-size: 13px;
+      }
+    }
+  }
+
+  .profile-contact {
+    margin-bottom: 20px;
+    padding: 15px 0;
+    border-top: 1px solid #f0f2f5;
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      font-size: 13px;
+      color: #4a5b78;
+
+      .icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .profile-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f2f5;
+
+    .detail-item {
+      text-align: center;
+
+      .label {
+        display: block;
+        font-size: 12px;
+        color: #6c829d;
+        margin-bottom: 4px;
+      }
+
+      .value {
+        font-size: 16px;
+        color: #1a2b49;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 10px;
+
+    .contact-btn, .view-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #e1e4e8;
+    }
+
+    .contact-btn {
+      background: #1a2b49;
+      color: white;
+
+      &:hover {
+        background: #2c3e5d;
+      }
+    }
+
+    .view-btn {
+      background: white;
+      color: #1a2b49;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+    }
+  }
+}

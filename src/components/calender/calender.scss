@@ -1,0 +1,89 @@
+.calendarContainer {
+    height: 80vh;
+    padding: 20px;
+    margin-top: 50px;
+    background-color: #bbbdc7;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: black;
+    
+  }
+  
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  
+    .toolbarButton {
+      background-color: #7684cd;
+      color: white;
+      &:hover {
+        background-color: #3700b3;
+      }
+    }
+  
+    .toolbarTitle {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #000000;
+    }
+  }
+  
+  .dayCell {
+    &:hover {
+      background-color: #1f1d50ab;
+      cursor: pointer;
+    }
+  }
+  
+  .event {
+    border-radius: 8px;
+    padding: 5px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    transition: transform 0.2s ease-in-out;
+  
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+  
+  .dialogTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .dialogContent {
+    padding: 20px;
+  }
+  
+  .textField {
+    margin-bottom: 16px;
+  }
+  
+  .colorPicker {
+    margin-top: 16px;
+  }
+  
+  .addButton {
+    margin-top: 24px;
+    background-color: #6200ea;
+    color: white;
+    &:hover {
+      background-color: #3700b3;
+    }
+  }
+  
+  .dialogActions {
+    padding: 16px;
+  }
+  
+  .closeButton {
+    color: #6200ea;
+  }
+  
+  .deleteButton {
+    color: #ff1744;
+  }

@@ -1,0 +1,227 @@
+@import "../styles/variables.scss";
+@import "../styles/responsive.scss";
+
+.analytics {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, minmax(180px, auto)); /* Ensure row heights are consistent */
+  grid-auto-flow: dense;
+  margin-right: 20px; /* Add right margin to avoid going out of the container */
+  padding-bottom: 20px; /* Ensure padding at the bottom to avoid content sticking to the footer */
+
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+    margin-left: 240px; /* Adjust left margin for smaller screens */
+  }
+
+  @include lg {
+    grid-template-columns: repeat(2, 1fr);
+    margin-left: 200px; /* Adjust left margin for smaller screens */
+  }
+
+  @include md {
+    grid-template-columns: repeat(1, 1fr);
+    margin-left: 20px; /* Adjust left margin for mobile screens */
+    margin-right: 20px; /* Adjust right margin for mobile screens */
+  }
+
+  @include sm {
+    grid-auto-rows: minmax(120px, auto);
+    margin-left: 10px; /* Adjust left margin for very small screens */
+    margin-right: 10px; /* Adjust right margin for very small screens */
+  }
+
+  .box {
+    
+    border-radius: 10px;
+   box-shadow:  0 4px 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Prevent content overflow */
+    background-color: rgb(255, 255, 255);
+
+    @include sm {
+      padding: 60px; /* Reduce padding for smaller screens */
+    }
+  }
+
+  .box1 {
+    grid-column: span 2;
+    grid-row: span 3;
+    color: black;
+    box-shadow:  0 4px 20px rgba(0, 0, 0, 0.3);
+    height: 72%; /* Allow it to grow independently */
+
+    
+    @include md {
+      grid-column: span 1;
+      grid-row: span 2;
+   
+    }
+
+    @include sm {
+      grid-row: span 1;
+    }
+  }
+
+  .box2 {
+    grid-column: span 1;
+    grid-row: span 1;
+    height: 80%;
+   
+    &:hover {
+      background-color: rgba(222, 190, 175, 0.438);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+    }
+   
+
+    @include md {
+      grid-column: span 1;
+      height: 100%;
+      margin-top: -100px;
+      padding: 10px 70px;
+    }
+  }
+
+  .box3 {
+    grid-column: span 1;
+    grid-row: span 1;
+    height: 80%;
+    
+
+    &:hover {
+      background-color: rgba(157, 204, 167, 0.438);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+    }
+   
+
+
+    @include md {
+      grid-column: span 1;
+      height: 100%;
+      margin-top: -100px;
+      padding: 10px 70px;
+    }
+  }
+
+  .box4 {
+    grid-column: span 1;
+    grid-row: span 3;
+    height: 80%; /* Ensure it grows without affecting others */
+
+    
+
+    @include md {
+      grid-column: span 1;
+      grid-row: span 2;
+    }
+
+    @include sm {
+      grid-row: span 1;
+      display: none;
+    }
+  }
+
+  .box5 {
+    grid-column: span 1;
+    grid-row: span 2;
+    height: 70%;
+    padding: 0;
+    margin-top: -40px;
+
+    &:hover {
+      background-color: rgba(253, 196, 252, 0.438);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+    }
+   
+   
+  
+    @include md {
+      grid-column: span 1;
+      margin-top: -80px;
+      margin-left: 50px;
+      height: 400px;
+    }
+  }
+
+  .box6 {
+    grid-column: span 1;
+    grid-row: span 2;
+    height: 70%;
+    padding: 0;
+    margin-top: -40px;
+
+    &:hover {
+      background-color: rgba(210, 207, 163, 0.438);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+    }
+   
+   
+
+    @include md {
+      grid-column: span 1;
+      margin-left: 50px;
+      margin-top: 20px;
+      height: 400px;
+    }
+  }
+
+  .box7 {
+    grid-column: span 2;
+    grid-row: span 5;
+    height: 130%;
+    margin-top: -140px;
+
+    &:hover {
+    
+      box-shadow: 0 8px 36px rgba(0, 0, 0, 0.2);
+    }
+   
+
+    @include md {
+      display: none; /* Hide on medium screens */
+    }
+  }
+
+  .box8 {
+    grid-column: span 2;
+    grid-row: span 2;
+    height: 150%;
+    margin-top: -140px;
+
+    &:hover {
+      
+      box-shadow: 0 8px 36px rgba(0, 0, 0, 0.2);
+    }
+   
+
+    @include md {
+      grid-column: span 1;
+      margin-left: 50px;
+      margin-top: 20px;
+      height: 500px;
+    }
+  }
+
+  .box9 {
+    grid-column: span 2;
+    grid-row: span 2;
+    height: 150%;
+   
+
+    &:hover {
+      
+      box-shadow: 0 8px 36px rgba(0, 0, 0, 0.2);
+    }
+   
+
+    @include md {
+      grid-column: span 1;
+      margin-left: 50px;
+      margin-top: 20px;
+      height: 500px;
+    }
+  }
+
+
+  
+}
