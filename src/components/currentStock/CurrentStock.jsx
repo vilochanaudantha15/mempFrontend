@@ -3,7 +3,7 @@ import { FaBox, FaCog, FaCubes, FaThumbtack, FaTv, FaSearch } from "react-icons/
 import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./CurrentStock.scss";
+import "./currentStock.scss";
 
 const API_BASE_URL = "/api"; // For office server with reverse proxy
 
