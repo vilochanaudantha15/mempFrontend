@@ -8,7 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import "./Production.scss";
+import "./production.scss";
 
 const data = [
   { day: "Mon", production: 1200 },
