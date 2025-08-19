@@ -68,7 +68,8 @@ const Sidebar = () => {
 
       <div className="sidebar-header">
         <h2>Galigamuwa</h2>
-        <span>Meter Manufacturing</span>
+        <span>Meter Enclosure Manufacturing Plant</span>
+
       </div>
 
       <ul className="sidebar-menu">
