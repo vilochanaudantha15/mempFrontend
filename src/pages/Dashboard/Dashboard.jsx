@@ -45,7 +45,7 @@ import DefectiveCrushed from '../../components/DefectiveCrushing/DefectiveCrushi
 import DeliveryNote from '../../components/DeliveryNote/DeliveryNote';
 import DispatchSummary from '../../components/DispatchSummary/DispatchSummary';
 
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = "/api";
 
 // Floating animation
 const floatAnimation = keyframes`
