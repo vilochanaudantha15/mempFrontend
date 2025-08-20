@@ -25,12 +25,27 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SearchIcon from '@mui/icons-material/Search';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
-const API_BASE_URL = "/api"; // For office server with reverse proxy
+const API_BASE_URL = "/api";
 
 // Floating animation
 const floatAnimation = keyframes`
@@ -39,55 +54,71 @@ const floatAnimation = keyframes`
   100% { transform: translateY(0px); }
 `;
 
-// Modern gradient backgrounds
+// iOS-style gradient backgrounds
 const gradientBackgrounds = {
-  primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  secondary: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-  success: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-  warning: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
-  error: 'linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)',
+  primary: 'linear-gradient(135deg, rgba(120, 119, 216, 0.85) 0%, rgba(81, 69, 205, 0.85) 100%)',
+  secondary: 'linear-gradient(135deg, rgba(245, 247, 250, 0.85) 0%, rgba(195, 207, 226, 0.85) 100%)',
+  success: 'linear-gradient(135deg, rgba(67, 233, 123, 0.85) 0%, rgba(56, 249, 215, 0.85) 100%)',
+  warning: 'linear-gradient(135deg, rgba(246, 211, 101, 0.85) 0%, rgba(253, 160, 133, 0.85) 100%)',
+  error: 'linear-gradient(135deg, rgba(255, 117, 140, 0.85) 0%, rgba(255, 126, 179, 0.85) 100%)',
+  sidebar: 'linear-gradient(180deg, rgba(251, 251, 254, 0.95) 0%, rgba(247, 247, 250, 0.95) 100%)',
+  header: 'linear-gradient(90deg, rgba(251, 251, 254, 0.95) 0%, rgba(247, 247, 250, 0.95) 100%)',
 };
 
-// Custom IconWrapper with square styling
+// iOS-style blur effect
+const glassEffect = {
+  backdropFilter: 'blur(20px)',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  boxShadow: '0 4px 24px 0 rgba(0, 0, 0, 0.06)',
+  border: '1px solid rgba(255, 255, 255, 0.5)',
+};
+
+// Custom IconWrapper with iOS-style design
 const IconWrapper = styled('span')(({ color }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 40,
-  height: 40,
+  width: 28,
+  height: 28,
+  borderRadius: 7,
   background: alpha(color, 0.1),
   transition: 'all 0.3s ease',
   '& .MuiSvgIcon-root': {
     color: `${color} !important`,
-    fontSize: '1.3rem',
+    fontSize: '1.1rem',
   },
   '&:hover': {
     background: alpha(color, 0.2),
-    transform: 'scale(1.05)',
+    transform: 'scale(1.1)',
   },
 }));
 
-// Navigation configuration
-const getNavigation = (userType) => [
+// iOS-style navigation configuration
+const getNavigation = () => [
   {
     kind: 'header',
     title: 'Galigamuwa Meter Manufacturing',
     sx: {
       padding: '16px',
-      marginBottom: '16px',
-      color: '#fff',
-      background: gradientBackgrounds.primary,
-      borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+      marginBottom: '8px',
+      color: '#5F5F7F',
+      fontSize: '0.9rem',
+      fontWeight: 600,
+      letterSpacing: '0.5px',
+      background: 'transparent',
+      borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
     },
   },
   {
-    segment: 'dashboard',
+    
     title: 'Dashboard',
     icon: <IconWrapper color="#6366F1"><DashboardIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-        borderLeft: '4px solid #6366F1',
+        backgroundColor: 'rgba(99, 102, 241, 0.12)',
+        borderLeft: '0px solid #6366F1',
         '& .MuiListItemIcon-root': { color: '#6366F1 !important' },
       },
     },
@@ -97,21 +128,25 @@ const getNavigation = (userType) => [
     title: 'Production Summary',
     icon: <IconWrapper color="#10B981"><EventNoteIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-        borderLeft: '4px solid #10B981',
+        backgroundColor: 'rgba(16, 185, 129, 0.12)',
+        borderLeft: '0px solid #10B981',
         '& .MuiListItemIcon-root': { color: '#10B981 !important' },
       },
     },
   },
   {
     segment: 'assemblysummary',
-    title: 'Assembly Line',
+    title: 'Assembly Line Summary',
     icon: <IconWrapper color="#F59E0B"><BuildIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-        borderLeft: '4px solid #F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.12)',
+        borderLeft: '0px solid #F59E0B',
         '& .MuiListItemIcon-root': { color: '#F59E0B !important' },
       },
     },
@@ -121,9 +156,11 @@ const getNavigation = (userType) => [
     title: 'Defectives Crushing Summary',
     icon: <IconWrapper color="#EF4444"><WarningIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-        borderLeft: '4px solid #EF4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.12)',
+        borderLeft: '0px solid #EF4444',
         '& .MuiListItemIcon-root': { color: '#EF4444 !important' },
       },
     },
@@ -133,9 +170,11 @@ const getNavigation = (userType) => [
     title: 'Dispatch Summary',
     icon: <IconWrapper color="#3B82F6"><LocalShippingIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        borderLeft: '4px solid #3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.12)',
+        borderLeft: '0px solid #3B82F6',
         '& .MuiListItemIcon-root': { color: '#3B82F6 !important' },
       },
     },
@@ -145,9 +184,11 @@ const getNavigation = (userType) => [
     title: 'Delivery Note',
     icon: <IconWrapper color="#8B5CF6"><DescriptionIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(139, 92, 246, 0.1)',
-        borderLeft: '4px solid #8B5CF6',
+        backgroundColor: 'rgba(139, 92, 246, 0.12)',
+        borderLeft: '0px solid #8B5CF6',
         '& .MuiListItemIcon-root': { color: '#8B5CF6 !important' },
       },
     },
@@ -157,37 +198,37 @@ const getNavigation = (userType) => [
     title: 'Calendar',
     icon: <IconWrapper color="#64748B"><CalendarTodayIcon /></IconWrapper>,
     sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
       '&.Mui-selected': {
-        backgroundColor: 'rgba(100, 116, 139, 0.1)',
-        borderLeft: '4px solid #64748B',
+        backgroundColor: 'rgba(100, 116, 139, 0.12)',
+        borderLeft: '0px solid #64748B',
         '& .MuiListItemIcon-root': { color: '#64748B !important' },
       },
     },
   },
-  ...(userType === 'admin'
-    ? [
-        {
-          segment: 'profile',
-          title: 'Employees',
-          icon: <IconWrapper color="#F59E0B"><PeopleIcon /></IconWrapper>,
-          sx: {
-            '&.Mui-selected': {
-              backgroundColor: 'rgba(245, 158, 11, 0.1)',
-              borderLeft: '4px solid #F59E0B',
-              '& .MuiListItemIcon-root': { color: '#F59E0B !important' },
-            },
-          },
-        },
-      ]
-    : []),
+  {
+    segment: 'profile',
+    title: 'Employees',
+    icon: <IconWrapper color="#F59E0B"><PeopleIcon /></IconWrapper>,
+    sx: {
+      margin: '4px 8px',
+      borderRadius: '12px',
+      '&.Mui-selected': {
+        backgroundColor: 'rgba(245, 158, 11, 0.12)',
+        borderLeft: '0px solid #F59E0B',
+        '& .MuiListItemIcon-root': { color: '#F59E0B !important' },
+      },
+    },
+  },
 ];
 
-// Modern theme
+// iOS-inspired theme
 const demoTheme = createTheme({
   palette: {
     mode: 'light',
     background: {
-      default: gradientBackgrounds.secondary,
+      default: '#F5F7FA',
       paper: 'rgba(255, 255, 255, 0.95)',
     },
     text: {
@@ -200,40 +241,62 @@ const demoTheme = createTheme({
     error: { main: '#EF4444' },
     warning: { main: '#F59E0B' },
   },
-  shape: { borderRadius: 8 },
+  shape: { borderRadius: 14 },
   typography: {
-    fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"SF Pro Display", "Inter", "Helvetica", "Arial", sans-serif',
     h5: { fontWeight: 700, letterSpacing: '-0.5px' },
+    body1: { fontWeight: 400 },
+    body2: { fontWeight: 400 },
   },
   components: {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          background: 'rgba(255, 255, 255, 0.95) !important',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          ...glassEffect,
+          background: gradientBackgrounds.header,
           color: '#1E293B',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background: 'rgba(255, 255, 255, 0.95) !important',
-          borderRight: '1px solid rgba(0, 0, 0, 0.12)',
-          boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
-          width: 240,
+          ...glassEffect,
+          background: gradientBackgrounds.sidebar,
+          borderRight: '1px solid rgba(0, 0, 0, 0.05)',
+          width: 260,
+          overflow: 'hidden',
+          '&.MuiDrawer-docked': {
+            width: '72px',
+          },
+          '&::-webkit-scrollbar': {
+            width: '0px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'rgba(0, 0, 0, 0.1)',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            background: 'rgba(0, 0, 0, 0.2)',
+          },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          background: 'rgba(255, 255, 255, 0.95)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          ...glassEffect,
+          background: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: '18px',
           transition: 'all 0.4s ease',
+          overflow: 'hidden',
           '&:hover': {
             transform: 'translateY(-4px)',
-            boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+            boxShadow: '0 12px 24px rgba(0,0,0,0.1)',
           },
         },
       },
@@ -241,40 +304,189 @@ const demoTheme = createTheme({
     MuiListItem: {
       styleOverrides: {
         root: {
-          borderRadius: 0,
-          margin: '0 8px',
-          padding: '8px 12px',
+          borderRadius: '12px',
+          margin: '4px 8px',
+          padding: '10px 14px',
           transition: 'all 0.3s ease',
+          overflow: 'hidden',
           '&.Mui-selected': {
-            backgroundColor: 'rgba(99, 102, 241, 0.08) !important',
-            borderLeft: '4px solid #6366F1',
+            backgroundColor: 'rgba(99, 102, 241, 0.12) !important',
             '& .MuiListItemIcon-root': { color: '#6366F1' },
           },
-          '&:hover': { backgroundColor: 'rgba(99, 102, 241, 0.05)' },
+          '&:hover': {
+            backgroundColor: 'rgba(99, 102, 241, 0.06)',
+            transform: 'translateX(4px)',
+          },
         },
       },
     },
     MuiListItemIcon: {
-      styleOverrides: { root: { minWidth: 'auto', marginRight: 16 } },
+      styleOverrides: {
+        root: {
+          minWidth: 'auto',
+          marginRight: 16,
+          overflow: 'hidden',
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        primary: {
+          fontSize: '0.9rem',
+          fontWeight: 500,
+          color: '#1E293B',
+        },
+      },
     },
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none',
           fontWeight: 500,
-          borderRadius: 8,
-          padding: '8px 16px',
+          borderRadius: 12,
+          padding: '10px 20px',
+          overflow: 'hidden',
         },
-        contained: { boxShadow: 'none', '&:hover': { boxShadow: 'none' } },
+        contained: {
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          '&:hover': {
+            boxShadow: '0 6px 16px rgba(0,0,0,0.15)',
+            transform: 'translateY(-2px)',
+          },
+        },
       },
     },
     MuiBreadcrumbs: {
       styleOverrides: {
-        root: { '& .MuiBreadcrumbs-separator': { color: 'text.secondary' } },
+        root: {
+          '& .MuiBreadcrumbs-separator': { color: 'text.secondary' },
+          padding: '12px 0',
+        },
+      },
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          maxWidth: '100% !important',
+          paddingLeft: '16px !important',
+          paddingRight: '16px !important',
+          margin: '0 auto',
+          '@media (min-width: 600px)': {
+            paddingLeft: '24px !important',
+            paddingRight: '24px !important',
+          },
+        },
       },
     },
   },
 });
+
+// Styled DashboardLayout to handle minimized sidebar
+const CustomDashboardLayout = styled(DashboardLayout)(({ theme }) => ({
+  '& .MuiDrawer-docked + .MuiContainer-root': {
+    marginLeft: '72px',
+    transition: theme.transitions.create('margin-left', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  '& .MuiDrawer-docked.MuiDrawer-open + .MuiContainer-root': {
+    marginLeft: '260px',
+    transition: theme.transitions.create('margin-left', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  '& .MuiContainer-root': {
+    width: 'calc(100% - 16px) !important',
+    maxWidth: 'none !important',
+    padding: '8px !important',
+    '@media (min-width: 600px)': {
+      padding: '16px !important',
+    },
+  },
+  '& .MuiDrawer-docked:not(.MuiDrawer-open)': {
+    '& .MuiListItemText-root': {
+      opacity: 0,
+      transition: 'opacity 0.2s ease',
+    },
+    '& .MuiListItemIcon-root': {
+      marginRight: 0,
+      justifyContent: 'center',
+    },
+    '& .MuiListItem-root': {
+      justifyContent: 'center',
+      padding: '14px 16px',
+      margin: '4px 12px',
+    },
+    '& .MuiListItemButton-root': {
+      justifyContent: 'center',
+    },
+  },
+}));
+
+// Apple-style header component
+const AppleHeader = styled('div')({
+  ...glassEffect,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '12px 24px',
+  borderRadius: '14px',
+  marginBottom: '24px',
+});
+
+// Metric Card Component
+const MetricCard = ({ title, value, change, icon, color }) => (
+  <Card sx={{
+    height: '100%',
+    background: gradientBackgrounds[color] || gradientBackgrounds.primary,
+    color: 'white',
+    position: 'relative',
+    overflow: 'hidden',
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      top: '-50%',
+      right: '-50%',
+      width: '100%',
+      height: '200%',
+      background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+      transform: 'rotate(30deg)',
+    },
+  }}>
+    <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+        <Typography variant="h6" sx={{ fontWeight: 600, opacity: 0.9 }}>
+          {title}
+        </Typography>
+        <Box sx={{
+          background: 'rgba(255, 255, 255, 0.2)',
+          borderRadius: '10px',
+          p: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          {icon}
+        </Box>
+      </Box>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+        {value}
+      </Typography>
+      <Chip
+        label={change}
+        size="small"
+        sx={{
+          background: 'rgba(255, 255, 255, 0.3)',
+          color: 'white',
+          fontWeight: 500,
+          fontSize: '0.75rem',
+        }}
+      />
+    </CardContent>
+  </Card>
+);
 
 // Chart Component
 function EfficiencyChart() {
@@ -320,7 +532,7 @@ function EfficiencyChart() {
           textAlign: 'center',
           p: 2,
           background: alpha('#ff0000', 0.1),
-          borderRadius: '8px',
+          borderRadius: '14px',
         }}
       >
         {errorMessage}
@@ -333,25 +545,31 @@ function EfficiencyChart() {
   }
 
   return (
-    <div style={{ background: 'rgba(255, 255, 255, 0.95)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', padding: '24px', borderRadius: '8px' }}>
+    <Card sx={{ p: 3 }}>
       <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
         Total Assembled Products by Date
       </Typography>
       <div style={{ height: '400px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.06)" />
             <XAxis dataKey="date" />
             <YAxis />
-            <Tooltip />
+            <ChartTooltip
+              contentStyle={{
+                ...glassEffect,
+                borderRadius: '12px',
+                border: 'none',
+              }}
+            />
             <Legend />
-            <Bar dataKey="cebQuantity" fill="#6366F1" name="CEB Quantity" />
-            <Bar dataKey="leco1Quantity" fill="#10B981" name="LECO1 Quantity" />
-            <Bar dataKey="leco2Quantity" fill="#F59E0B" name="LECO2 Quantity" />
+            <Bar dataKey="cebQuantity" fill="#6366F1" name="CEB Quantity" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="leco1Quantity" fill="#10B981" name="LECO1 Quantity" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="leco2Quantity" fill="#F59E0B" name="LECO2 Quantity" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -403,30 +621,10 @@ function DynamicBreadcrumbs({ pathname, navigation, router }) {
       >
         {navItem?.title || segment}
       </Link>
+      
     );
   });
 
-  return (
-    <Breadcrumbs
-      aria-label="breadcrumb"
-      sx={{ mb: 3, '& .MuiBreadcrumbs-separator': { color: 'text.secondary' } }}
-    >
-      <Link
-        underline="hover"
-        color="inherit"
-        href="/dashboard"
-        onClick={(e) => {
-          e.preventDefault();
-          router.navigate('/dashboard');
-        }}
-        sx={{ display: 'flex', alignItems: 'center', '&:hover': { color: 'primary.main' } }}
-        aria-label="Navigate to Home"
-      >
-        Home
-      </Link>
-      {breadcrumbs}
-    </Breadcrumbs>
-  );
 }
 
 // Loading component with animation
@@ -447,7 +645,7 @@ function LoadingIndicator() {
         style={{
           width: 80,
           height: 80,
-          borderRadius: '8px',
+          borderRadius: '20px',
           background: 'rgba(255, 255, 255, 0.8)',
           display: 'flex',
           justifyContent: 'center',
@@ -502,53 +700,54 @@ function LoadingIndicator() {
 export default function DashboardLayoutBasic(props) {
   const { window } = props;
   const navigate = useNavigate();
-  const [userType, setUserType] = React.useState('user');
   const [isLoading, setIsLoading] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [stockData, setStockData] = React.useState({
+    cebProducts: 0,
+    leco1Products: 0,
+    leco2Products: 0,
+  });
   const router = useDemoRouter(props.initialPath || '/dashboard', navigate);
   const demoWindow = window ? window() : undefined;
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   React.useEffect(() => {
     const controller = new AbortController();
-    const fetchUserType = async () => {
-      setIsLoading(true);
-      setErrorMessage('');
+    const fetchStockData = async () => {
       try {
-        const storedUserData = sessionStorage.getItem('userData');
-        if (storedUserData) {
-          const { email } = JSON.parse(storedUserData);
-          const response = await axios.post(
-            `${API_BASE_URL}/users/get-user-type`,
-            { email },
-            { signal: controller.signal }
-          );
-          setUserType(response.data.userType || 'user');
-          setErrorMessage('');
-        } else {
-          setUserType('user');
-          setErrorMessage('');
-        }
+        const response = await axios.get(`${API_BASE_URL}/assemblyLine/assembled/total`, {
+          signal: controller.signal,
+        });
+        const latestData = response.data[response.data.length - 1] || {};
+        setStockData({
+          cebProducts: latestData.cebQuantity || 0,
+          leco1Products: latestData.leco1Quantity || 0,
+          leco2Products: latestData.leco2Quantity || 0,
+        });
+        setErrorMessage('');
       } catch (error) {
         if (axios.isCancel(error)) return;
-        console.error('Error fetching userType:', error);
-        setErrorMessage(error.response?.data?.message || 'Failed to fetch user type. Please check the server connection.');
-        setUserType('user');
+        console.error('Error fetching stock data:', error);
+        setErrorMessage(error.response?.data?.message || 'Failed to fetch stock data. Please check the server connection.');
       } finally {
         setIsLoading(false);
       }
     };
-    try {
-      fetchUserType();
-    } catch (error) {
-      console.error('Error accessing session storage:', error);
-      setErrorMessage('Unable to access user data. Please try again or contact support.');
-      setUserType('user');
-      setIsLoading(false);
-    }
-    return () => controller.abort(); // Cleanup on unmount
+
+    fetchStockData();
+
+    return () => controller.abort();
   }, []);
 
-  const NAVIGATION = getNavigation(userType);
+  const NAVIGATION = getNavigation();
 
   const renderContent = () => {
     const normalizedPath = router.pathname.replace(/\/$/, '');
@@ -563,106 +762,100 @@ export default function DashboardLayoutBasic(props) {
                 textAlign: 'center',
                 p: 2,
                 background: alpha('#ff0000', 0.1),
-                borderRadius: '8px',
+                borderRadius: '14px',
                 mb: 2,
               }}
             >
               {errorMessage}
             </Typography>
           )}
+          
+          
+          
+          {/* Metrics Cards for Assembled Products */}
+          <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Grid item xs={12} sm={6} md={4}>
+              <MetricCard
+                title="CEB Products"
+                value={stockData.cebProducts}
+                change="Updated 1 hr ago"
+                icon={<InventoryIcon sx={{ color: 'white' }} />}
+                color="primary"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <MetricCard
+                title="LECO1 Products"
+                value={stockData.leco1Products}
+                change="Updated 1 hr ago"
+                icon={<InventoryIcon sx={{ color: 'white' }} />}
+                color="success"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <MetricCard
+                title="LECO2 Products"
+                value={stockData.leco2Products}
+                change="Updated 1 hr ago"
+                icon={<InventoryIcon sx={{ color: 'white' }} />}
+                color="warning"
+              />
+            </Grid>
+          </Grid>
+          
+          {/* Main Content */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <EfficiencyChart />
             </Grid>
             <Grid item xs={12} md={4}>
-              <div
-                style={{
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  padding: '24px',
-                  height: '400px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  borderRadius: '8px',
-                }}
-                aria-label="Recent Activities"
-              >
+              <Card sx={{ p: 3, height: '100%' }}>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
                   Recent Activities
                 </Typography>
+                <Divider sx={{ my: 2 }} />
                 {[
-                  'Production target achieved',
-                  'New defect reported on Line 2',
-                  'Maintenance scheduled for tomorrow',
-                  'New order received from ABC Corp',
+                  { text: 'Production target achieved', time: '2 hours ago', status: 'success' },
+                  { text: 'New defect reported on Line 2', time: '5 hours ago', status: 'error' },
+                  { text: 'Maintenance scheduled for tomorrow', time: '1 day ago', status: 'warning' },
+                  { text: 'New order received from ABC Corp', time: '2 days ago', status: 'info' },
                 ].map((activity, i) => (
-                  <div
+                  <Box
                     key={i}
-                    style={{
+                    sx={{
                       display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '12px',
-                      padding: '8px',
-                      borderRadius: '4px',
+                      alignItems: 'flex-start',
+                      mb: 2,
+                      p: 1,
+                      borderRadius: '8px',
                       background: i % 2 === 0 ? 'rgba(99, 102, 241, 0.05)' : 'transparent',
                     }}
                   >
-                    <div
-                      style={{
+                    <Box
+                      sx={{
                         width: '8px',
                         height: '8px',
-                        borderRadius: '2px',
-                        background: ['#6366F1', '#8B5CF6', '#A5B4FC'][i % 3],
-                        marginRight: '12px',
+                        borderRadius: '50%',
+                        background:
+                          activity.status === 'success' ? '#10B981' :
+                          activity.status == 'error' ? '#EF4444' :
+                          activity.status == 'warning' ? '#F59E0B' : '#3B82F6',
+                        mt: 0.5,
+                        mr: 2,
+                        flexShrink: 0,
                       }}
                     />
-                    <Typography variant="body2">{activity}</Typography>
-                  </div>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {activity.text}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        {activity.time}
+                      </Typography>
+                    </Box>
+                  </Box>
                 ))}
-              </div>
-            </Grid>
-            <Grid item xs={12}>
-              <div
-                style={{
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  padding: '24px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderRadius: '8px',
-                }}
-                aria-label="Quick Stats"
-              >
-                <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                  Quick Stats
-                </Typography>
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                  {['Production', 'Defects', 'Efficiency', 'Orders', 'Inventory'].map((stat, i) => (
-                    <div
-                      key={stat}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        padding: '16px 24px',
-                        borderRadius: '8px',
-                        textAlign: 'center',
-                        minWidth: '120px',
-                        animation: `${floatAnimation} ${3 + i}s ease-in-out infinite`,
-                      }}
-                    >
-                      <Typography variant="subtitle2" sx={{ opacity: 0.8 }}>
-                        {stat}
-                      </Typography>
-                      <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                        {Math.floor(Math.random() * 100)}
-                        {stat === 'Efficiency' || stat === 'Defects' ? '%' : ''}
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </Card>
             </Grid>
             <Grid item xs={12}>
               <Analytics />
@@ -675,13 +868,12 @@ export default function DashboardLayoutBasic(props) {
       props.children || (
         <div
           style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            ...glassEffect,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             height: '60vh',
-            borderRadius: '8px',
+            borderRadius: '14px',
           }}
           aria-label="No content available"
         >
@@ -705,15 +897,39 @@ export default function DashboardLayoutBasic(props) {
       window={demoWindow}
       branding={{ title: 'Galigamuwa Meter Manufacturing', logo: '' }}
     >
-      <DashboardLayout>
+      <CustomDashboardLayout>
+      {/* Header with search and user profile */}
+          <AppleHeader>
+            <Box display="flex" alignItems="center">
+              <Box sx={{
+                position: 'relative',
+                '&:before': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: '2px',
+                  background: 'linear-gradient(to bottom, #6366F1, #8B5CF6)',
+                  borderRadius: '1px',
+                },
+              }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, pl: 2 }}>
+                  Dashboard
+                </Typography>
+              </Box>
+            </Box>
+            
+           
+          </AppleHeader>
         <PageContainer
-          title={router.pathname.split('/').pop() || 'Dashboard'}
-          sx={{ background: 'transparent' }}
+       
+          
         >
           <DynamicBreadcrumbs pathname={router.pathname} navigation={NAVIGATION} router={router} />
           {renderContent()}
         </PageContainer>
-      </DashboardLayout>
+      </CustomDashboardLayout>
     </AppProvider>
   );
 }
