@@ -10,6 +10,10 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PeopleIcon from '@mui/icons-material/People';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DescriptionIcon from '@mui/icons-material/Description';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
@@ -34,18 +38,15 @@ import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SearchIcon from '@mui/icons-material/Search';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutIcon from '@mui/icons-material/Logout';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import CalendarScheduler from '../../components/calender/Calender';
+import ProfileCard from '../../components/profile/Profile';
+import ProductionShiftReport from '../../components/currentStock/productionSummary/ProductionSummary';
+import AssemblySummary from '../../components/AssemblyLine/AssemblySummary';
+import DefectiveCrushed from '../../components/DefectiveCrushing/DefectiveCrushing';
+import DeliveryNote from '../../components/DeliveryNote/DeliveryNote';
+import DispatchSummary from '../../components/DispatchSummary/DispatchSummary';
 
-const API_BASE_URL = "/api";
+const API_BASE_URL = "http://localhost:3000/api";
 
 // Floating animation
 const floatAnimation = keyframes`
@@ -93,7 +94,7 @@ const IconWrapper = styled('span')(({ color }) => ({
   },
 }));
 
-// iOS-style navigation configuration
+// Updated navigation configuration to match App.jsx routes
 const getNavigation = () => [
   {
     kind: 'header',
@@ -110,7 +111,8 @@ const getNavigation = () => [
     },
   },
   {
-    
+    path: '/dashboard',
+    segment: 'dashboard',
     title: 'Dashboard',
     icon: <IconWrapper color="#6366F1"><DashboardIcon /></IconWrapper>,
     sx: {
@@ -124,7 +126,8 @@ const getNavigation = () => [
     },
   },
   {
-    segment: 'productionSummary',
+    path: '/productionsummary',
+    segment: 'productionsummary',
     title: 'Production Summary',
     icon: <IconWrapper color="#10B981"><EventNoteIcon /></IconWrapper>,
     sx: {
@@ -138,6 +141,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/assemblysummary',
     segment: 'assemblysummary',
     title: 'Assembly Line Summary',
     icon: <IconWrapper color="#F59E0B"><BuildIcon /></IconWrapper>,
@@ -152,6 +156,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/defective',
     segment: 'defective',
     title: 'Defectives Crushing Summary',
     icon: <IconWrapper color="#EF4444"><WarningIcon /></IconWrapper>,
@@ -166,6 +171,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/dispatchsummary',
     segment: 'dispatchsummary',
     title: 'Dispatch Summary',
     icon: <IconWrapper color="#3B82F6"><LocalShippingIcon /></IconWrapper>,
@@ -180,6 +186,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/delivernote',
     segment: 'delivernote',
     title: 'Delivery Note',
     icon: <IconWrapper color="#8B5CF6"><DescriptionIcon /></IconWrapper>,
@@ -194,6 +201,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/calendar',
     segment: 'calendar',
     title: 'Calendar',
     icon: <IconWrapper color="#64748B"><CalendarTodayIcon /></IconWrapper>,
@@ -208,6 +216,7 @@ const getNavigation = () => [
     },
   },
   {
+    path: '/profile',
     segment: 'profile',
     title: 'Employees',
     icon: <IconWrapper color="#F59E0B"><PeopleIcon /></IconWrapper>,
@@ -270,19 +279,7 @@ const demoTheme = createTheme({
           '&.MuiDrawer-docked': {
             width: '72px',
           },
-          '&::-webkit-scrollbar': {
-            width: '0px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: 'transparent',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'rgba(0, 0, 0, 0.1)',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: 'rgba(0, 0, 0, 0.2)',
-          },
+          '&::-webkit-scrollbar': { width: '0px' },
         },
       },
     },
@@ -322,20 +319,12 @@ const demoTheme = createTheme({
     },
     MuiListItemIcon: {
       styleOverrides: {
-        root: {
-          minWidth: 'auto',
-          marginRight: 16,
-          overflow: 'hidden',
-        },
+        root: { minWidth: 'auto', marginRight: 16, overflow: 'hidden' },
       },
     },
     MuiListItemText: {
       styleOverrides: {
-        primary: {
-          fontSize: '0.9rem',
-          fontWeight: 500,
-          color: '#1E293B',
-        },
+        primary: { fontSize: '0.9rem', fontWeight: 500, color: '#1E293B' },
       },
     },
     MuiButton: {
@@ -371,10 +360,14 @@ const demoTheme = createTheme({
           paddingLeft: '16px !important',
           paddingRight: '16px !important',
           margin: '0 auto',
-          '@media (min-width: 600px)': {
-            paddingLeft: '24px !important',
-            paddingRight: '24px !important',
-          },
+        },
+      },
+    },
+    // 🔥 Hide ALL Typography variant="h4" (Dashboard headings etc.)
+    MuiTypography: {
+      styleOverrides: {
+        h4: {
+          display: "none",
         },
       },
     },
@@ -401,40 +394,19 @@ const CustomDashboardLayout = styled(DashboardLayout)(({ theme }) => ({
     width: 'calc(100% - 16px) !important',
     maxWidth: 'none !important',
     padding: '8px !important',
-    '@media (min-width: 600px)': {
-      padding: '16px !important',
-    },
+    '@media (min-width: 600px)': { padding: '16px !important' },
   },
   '& .MuiDrawer-docked:not(.MuiDrawer-open)': {
-    '& .MuiListItemText-root': {
-      opacity: 0,
-      transition: 'opacity 0.2s ease',
-    },
-    '& .MuiListItemIcon-root': {
-      marginRight: 0,
-      justifyContent: 'center',
-    },
+    '& .MuiListItemText-root': { opacity: 0, transition: 'opacity 0.2s ease' },
+    '& .MuiListItemIcon-root': { marginRight: 0, justifyContent: 'center' },
     '& .MuiListItem-root': {
       justifyContent: 'center',
       padding: '14px 16px',
       margin: '4px 12px',
     },
-    '& .MuiListItemButton-root': {
-      justifyContent: 'center',
-    },
+    '& .MuiListItemButton-root': { justifyContent: 'center' },
   },
 }));
-
-// Apple-style header component
-const AppleHeader = styled('div')({
-  ...glassEffect,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '12px 24px',
-  borderRadius: '14px',
-  marginBottom: '24px',
-});
 
 // Metric Card Component
 const MetricCard = ({ title, value, change, icon, color }) => (
@@ -581,50 +553,33 @@ function useDemoRouter(initialPath, navigate) {
       pathname,
       searchParams: new URLSearchParams(),
       navigate: (path) => {
-        const fullPath = path.startsWith('/') ? path : `/${path}`;
+        const fullPath = typeof path === 'string' && path.startsWith('/') ? path : `/${path}`;
+        console.log('Navigating to:', fullPath); // Debug log
         setPathname(fullPath);
         navigate(fullPath);
       },
     }),
-    [pathname, navigate],
+    [pathname, navigate]
   );
+
+  // Sync pathname with browser URL
+  React.useEffect(() => {
+    if (window.location.pathname !== pathname) {
+      setPathname(window.location.pathname);
+    }
+  }, [pathname]);
 
   return router;
 }
 
-// Modern Breadcrumbs Component
-function DynamicBreadcrumbs({ pathname, navigation, router }) {
-  const segments = pathname.split('/').filter((segment) => segment);
-  const navItems = navigation.filter((item) => item.segment);
-
-  const breadcrumbs = segments.map((segment, index) => {
-    const navItem = navItems.find((item) => item.segment === segment);
-    const path = `/${segments.slice(0, index + 1).join('/')}`;
-    const isLast = index === segments.length - 1;
-
-    return isLast ? (
-      <Typography key={segment} sx={{ color: 'text.primary', fontWeight: 600 }}>
-        {navItem?.title || segment}
+function DynamicBreadcrumbs() {
+  return (
+    <Breadcrumbs aria-label="breadcrumb">
+      <Typography sx={{ color: 'text.primary', fontWeight: 600 }}>
+        Home/Dashboard
       </Typography>
-    ) : (
-      <Link
-        key={segment}
-        underline="hover"
-        color="inherit"
-        href={path}
-        onClick={(e) => {
-          e.preventDefault();
-          router.navigate(path);
-        }}
-        sx={{ '&:hover': { color: 'primary.main' } }}
-        aria-label={`Navigate to ${navItem?.title || segment}`}
-      >
-        {navItem?.title || segment}
-      </Link>
-      
-    );
-  });
-
+    </Breadcrumbs>
+  );
 }
 
 // Loading component with animation
@@ -702,7 +657,6 @@ export default function DashboardLayoutBasic(props) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [stockData, setStockData] = React.useState({
     cebProducts: 0,
     leco1Products: 0,
@@ -710,14 +664,6 @@ export default function DashboardLayoutBasic(props) {
   });
   const router = useDemoRouter(props.initialPath || '/dashboard', navigate);
   const demoWindow = window ? window() : undefined;
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -751,138 +697,137 @@ export default function DashboardLayoutBasic(props) {
 
   const renderContent = () => {
     const normalizedPath = router.pathname.replace(/\/$/, '');
-    if (normalizedPath === '/dashboard') {
-      return (
-        <div className="dashboard" role="region" aria-label="Dashboard Content">
-          {errorMessage && (
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'error.main',
-                textAlign: 'center',
-                p: 2,
-                background: alpha('#ff0000', 0.1),
-                borderRadius: '14px',
-                mb: 2,
-              }}
-            >
-              {errorMessage}
-            </Typography>
-          )}
-          
-          
-          
-          {/* Metrics Cards for Assembled Products */}
-          <Grid container spacing={3} sx={{ mb: 3 }}>
-            <Grid item xs={12} sm={6} md={4}>
-              <MetricCard
-                title="CEB Products"
-                value={stockData.cebProducts}
-                change="Updated 1 hr ago"
-                icon={<InventoryIcon sx={{ color: 'white' }} />}
-                color="primary"
-              />
+    switch (normalizedPath) {
+      case '/dashboard':
+        return (
+          <div className="dashboard" role="region" aria-label="Dashboard Content">
+            {errorMessage && (
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'error.main',
+                  textAlign: 'center',
+                  p: 2,
+                  background: alpha('#ff0000', 0.1),
+                  borderRadius: '14px',
+                  mb: 2,
+                }}
+              >
+                {errorMessage}
+              </Typography>
+            )}
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <MetricCard
+                  title="CEB Products"
+                  value={stockData.cebProducts}
+                  change="Updated 1 hr ago"
+                  icon={<InventoryIcon sx={{ color: 'white' }} />}
+                  color="primary"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <MetricCard
+                  title="LECO1 Products"
+                  value={stockData.leco1Products}
+                  change="Updated 1 hr ago"
+                  icon={<InventoryIcon sx={{ color: 'white' }} />}
+                  color="success"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <MetricCard
+                  title="LECO2 Products"
+                  value={stockData.leco2Products}
+                  change="Updated 1 hr ago"
+                  icon={<InventoryIcon sx={{ color: 'white' }} />}
+                  color="warning"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <MetricCard
-                title="LECO1 Products"
-                value={stockData.leco1Products}
-                change="Updated 1 hr ago"
-                icon={<InventoryIcon sx={{ color: 'white' }} />}
-                color="success"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <MetricCard
-                title="LECO2 Products"
-                value={stockData.leco2Products}
-                change="Updated 1 hr ago"
-                icon={<InventoryIcon sx={{ color: 'white' }} />}
-                color="warning"
-              />
-            </Grid>
-          </Grid>
-          
-          {/* Main Content */}
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
-              <EfficiencyChart />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 3, height: '100%' }}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Recent Activities
-                </Typography>
-                <Divider sx={{ my: 2 }} />
-                {[
-                  { text: 'Production target achieved', time: '2 hours ago', status: 'success' },
-                  { text: 'New defect reported on Line 2', time: '5 hours ago', status: 'error' },
-                  { text: 'Maintenance scheduled for tomorrow', time: '1 day ago', status: 'warning' },
-                  { text: 'New order received from ABC Corp', time: '2 days ago', status: 'info' },
-                ].map((activity, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      mb: 2,
-                      p: 1,
-                      borderRadius: '8px',
-                      background: i % 2 === 0 ? 'rgba(99, 102, 241, 0.05)' : 'transparent',
-                    }}
-                  >
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={8}>
+                <EfficiencyChart />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Card sx={{ p: 3, height: '100%', borderRadius: '20px' }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                    Key Performance Metrics
+                  </Typography>
+                  <Divider sx={{ my: 2 }} />
+                  {[
+                    { text: 'Production Efficiency', value: '92%', icon: <TrendingUpIcon sx={{ color: '#10B981' }} />, status: 'success' },
+                    { text: 'Quality Control Rate', value: '98%', icon: <AssessmentIcon sx={{ color: '#3B82F6' }} />, status: 'info' },
+                    { text: 'On-Time Delivery', value: '95%', icon: <ScheduleIcon sx={{ color: '#F59E0B' }} />, status: 'warning' },
+                    { text: 'Inventory Turnover', value: '6.5x', icon: <InventoryIcon sx={{ color: '#6366F1' }} />, status: 'primary' },
+                  ].map((metric, i) => (
                     <Box
+                      key={i}
                       sx={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        background:
-                          activity.status === 'success' ? '#10B981' :
-                          activity.status == 'error' ? '#EF4444' :
-                          activity.status == 'warning' ? '#F59E0B' : '#3B82F6',
-                        mt: 0.5,
-                        mr: 2,
-                        flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        mb: 2,
+                        p: 1.5,
+                        borderRadius: '10px',
+                        background: i % 2 === 0 ? 'rgba(99, 102, 241, 0.05)' : 'transparent',
                       }}
-                    />
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                        {activity.text}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {activity.time}
-                      </Typography>
+                    >
+                      <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+                        {metric.icon}
+                      </Box>
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {metric.text}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                          {metric.value}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
-              </Card>
+                  ))}
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <Analytics />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Analytics />
-            </Grid>
-          </Grid>
-        </div>
-      );
+          </div>
+        );
+      case '/productionsummary':
+        return <ProductionShiftReport />;
+      case '/assemblysummary':
+        return <AssemblySummary />;
+      case '/defective':
+        return <DefectiveCrushed />;
+      case '/dispatchsummary':
+        return <DispatchSummary />;
+      case '/delivernote':
+        return <DeliveryNote />;
+      case '/calendar':
+        return <CalendarScheduler />;
+      case '/profile':
+        return <ProfileCard />;
+      default:
+        return (
+          <div role="region" aria-label="Page Content">
+            <div
+              style={{
+                ...glassEffect,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '60vh',
+                borderRadius: '14px',
+              }}
+              aria-label="No content available"
+            >
+              <Typography variant="h6" color="text.secondary">
+                No content available for this route
+              </Typography>
+            </div>
+          </div>
+        );
     }
-    return (
-      props.children || (
-        <div
-          style={{
-            ...glassEffect,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '60vh',
-            borderRadius: '14px',
-          }}
-          aria-label="No content available"
-        >
-          <Typography variant="h6" color="text.secondary">
-            No content available for this route
-          </Typography>
-        </div>
-      )
-    );
   };
 
   if (isLoading) {
@@ -898,34 +843,8 @@ export default function DashboardLayoutBasic(props) {
       branding={{ title: 'Galigamuwa Meter Manufacturing', logo: '' }}
     >
       <CustomDashboardLayout>
-      {/* Header with search and user profile */}
-          <AppleHeader>
-            <Box display="flex" alignItems="center">
-              <Box sx={{
-                position: 'relative',
-                '&:before': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: '2px',
-                  background: 'linear-gradient(to bottom, #6366F1, #8B5CF6)',
-                  borderRadius: '1px',
-                },
-              }}>
-                <Typography variant="h5" sx={{ fontWeight: 700, pl: 2 }}>
-                  Dashboard
-                </Typography>
-              </Box>
-            </Box>
-            
-           
-          </AppleHeader>
-        <PageContainer
-       
-          
-        >
+        
+        <PageContainer>
           <DynamicBreadcrumbs pathname={router.pathname} navigation={NAVIGATION} router={router} />
           {renderContent()}
         </PageContainer>
