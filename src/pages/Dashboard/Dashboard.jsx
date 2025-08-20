@@ -20,7 +20,6 @@ import { PageContainer } from '@toolpad/core/PageContainer';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import Analytics from '../../pages/Dashboard/Analytics';
 import { keyframes } from '@emotion/react';
 import {
@@ -94,7 +93,7 @@ const IconWrapper = styled('span')(({ color }) => ({
   },
 }));
 
-// Updated navigation configuration to match App.jsx routes
+// Navigation configuration
 const getNavigation = () => [
   {
     kind: 'header',
@@ -363,18 +362,10 @@ const demoTheme = createTheme({
         },
       },
     },
-    // 🔥 Hide ALL Typography variant="h4" (Dashboard headings etc.)
-    MuiTypography: {
-      styleOverrides: {
-        h4: {
-          display: "none",
-        },
-      },
-    },
   },
 });
 
-// Styled DashboardLayout to handle minimized sidebar
+// Styled DashboardLayout
 const CustomDashboardLayout = styled(DashboardLayout)(({ theme }) => ({
   '& .MuiDrawer-docked + .MuiContainer-root': {
     marginLeft: '72px',
@@ -409,56 +400,59 @@ const CustomDashboardLayout = styled(DashboardLayout)(({ theme }) => ({
 }));
 
 // Metric Card Component
-const MetricCard = ({ title, value, change, icon, color }) => (
-  <Card sx={{
-    height: '100%',
-    background: gradientBackgrounds[color] || gradientBackgrounds.primary,
-    color: 'white',
-    position: 'relative',
-    overflow: 'hidden',
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: '-50%',
-      right: '-50%',
-      width: '100%',
-      height: '200%',
-      background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
-      transform: 'rotate(30deg)',
-    },
-  }}>
-    <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-        <Typography variant="h6" sx={{ fontWeight: 600, opacity: 0.9 }}>
-          {title}
-        </Typography>
-        <Box sx={{
-          background: 'rgba(255, 255, 255, 0.2)',
-          borderRadius: '10px',
-          p: '6px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          {icon}
+const MetricCard = ({ title, value, change, icon, color }) => {
+  console.log(`MetricCard ${title} value:`, value); // Debug log
+  return (
+    <Card sx={{
+      height: '100%',
+      background: gradientBackgrounds[color] || gradientBackgrounds.primary,
+      color: 'white',
+      position: 'relative',
+      overflow: 'hidden',
+      '&:before': {
+        content: '""',
+        position: 'absolute',
+        top: '-50%',
+        right: '-50%',
+        width: '100%',
+        height: '200%',
+        background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+        transform: 'rotate(30deg)',
+      },
+    }}>
+      <CardContent sx={{ position: 'relative', zIndex: 1 }}>
+        <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+          <Typography variant="h6" sx={{ fontWeight: 600, opacity: 0.9 }}>
+            {title}
+          </Typography>
+          <Box sx={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '10px',
+            p: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            {icon}
+          </Box>
         </Box>
-      </Box>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-        {value}
-      </Typography>
-      <Chip
-        label={change}
-        size="small"
-        sx={{
-          background: 'rgba(255, 255, 255, 0.3)',
-          color: 'white',
-          fontWeight: 500,
-          fontSize: '0.75rem',
-        }}
-      />
-    </CardContent>
-  </Card>
-);
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+          {value ?? 'N/A'}
+        </Typography>
+        <Chip
+          label={change}
+          size="small"
+          sx={{
+            background: 'rgba(255, 255, 255, 0.3)',
+            color: 'white',
+            fontWeight: 500,
+            fontSize: '0.75rem',
+          }}
+        />
+      </CardContent>
+    </Card>
+  );
+};
 
 // Chart Component
 function EfficiencyChart() {
@@ -475,12 +469,13 @@ function EfficiencyChart() {
         const response = await axios.get(`${API_BASE_URL}/assemblyLine/assembled/total`, {
           signal: controller.signal,
         });
-        const data = response.data.map((item) => ({
+        console.log('EfficiencyChart API Response:', response.data);
+        const data = Array.isArray(response.data) ? response.data.map((item) => ({
           date: new Date(item.date).toLocaleDateString(),
-          cebQuantity: item.cebQuantity,
-          leco1Quantity: item.leco1Quantity,
-          leco2Quantity: item.leco2Quantity,
-        }));
+          cebQuantity: item.cebQuantity || 0,
+          leco1Quantity: item.leco1Quantity || 0,
+          leco2Quantity: item.leco2Quantity || 0,
+        })) : [];
         setChartData(data);
         setErrorMessage('');
       } catch (error) {
@@ -554,7 +549,7 @@ function useDemoRouter(initialPath, navigate) {
       searchParams: new URLSearchParams(),
       navigate: (path) => {
         const fullPath = typeof path === 'string' && path.startsWith('/') ? path : `/${path}`;
-        console.log('Navigating to:', fullPath); // Debug log
+        console.log('Navigating to:', fullPath);
         setPathname(fullPath);
         navigate(fullPath);
       },
@@ -562,7 +557,6 @@ function useDemoRouter(initialPath, navigate) {
     [pathname, navigate]
   );
 
-  // Sync pathname with browser URL
   React.useEffect(() => {
     if (window.location.pathname !== pathname) {
       setPathname(window.location.pathname);
@@ -582,7 +576,6 @@ function DynamicBreadcrumbs() {
   );
 }
 
-// Loading component with animation
 function LoadingIndicator() {
   return (
     <div
@@ -658,9 +651,9 @@ export default function DashboardLayoutBasic(props) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState('');
   const [stockData, setStockData] = React.useState({
-    cebProducts: 0,
-    leco1Products: 0,
-    leco2Products: 0,
+    cebProducts: null,
+    leco1Products: null,
+    leco2Products: null,
   });
   const router = useDemoRouter(props.initialPath || '/dashboard', navigate);
   const demoWindow = window ? window() : undefined;
@@ -669,16 +662,27 @@ export default function DashboardLayoutBasic(props) {
     const controller = new AbortController();
     const fetchStockData = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(`${API_BASE_URL}/assemblyLine/assembled/total`, {
           signal: controller.signal,
         });
-        const latestData = response.data[response.data.length - 1] || {};
-        setStockData({
-          cebProducts: latestData.cebQuantity || 0,
-          leco1Products: latestData.leco1Quantity || 0,
-          leco2Products: latestData.leco2Quantity || 0,
-        });
-        setErrorMessage('');
+        console.log('Dashboard API Response:', response.data);
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const latestData = response.data[response.data.length - 1];
+          setStockData({
+            cebProducts: latestData.cebQuantity ?? 0,
+            leco1Products: latestData.leco1Quantity ?? 0,
+            leco2Products: latestData.leco2Quantity ?? 0,
+          });
+          console.log('Updated stockData:', {
+            cebProducts: latestData.cebQuantity ?? 0,
+            leco1Products: latestData.leco1Quantity ?? 0,
+            leco2Products: latestData.leco2Quantity ?? 0,
+          });
+          setErrorMessage('');
+        } else {
+          setErrorMessage('No data available from the server.');
+        }
       } catch (error) {
         if (axios.isCancel(error)) return;
         console.error('Error fetching stock data:', error);
@@ -696,6 +700,7 @@ export default function DashboardLayoutBasic(props) {
   const NAVIGATION = getNavigation();
 
   const renderContent = () => {
+    console.log('Rendering dashboard with stockData:', stockData); // Debug log
     const normalizedPath = router.pathname.replace(/\/$/, '');
     switch (normalizedPath) {
       case '/dashboard':
@@ -716,35 +721,39 @@ export default function DashboardLayoutBasic(props) {
                 {errorMessage}
               </Typography>
             )}
-            <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6} md={4}>
-                <MetricCard
-                  title="CEB Products"
-                  value={stockData.cebProducts}
-                  change="Updated 1 hr ago"
-                  icon={<InventoryIcon sx={{ color: 'white' }} />}
-                  color="primary"
-                />
+            {isLoading ? (
+              <Typography>Loading data...</Typography>
+            ) : (
+              <Grid container spacing={3} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={4}>
+                  <MetricCard
+                    title="CEB Products"
+                    value={stockData.cebProducts}
+                    change="Updated 1 hr ago"
+                    icon={<InventoryIcon sx={{ color: 'white' }} />}
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <MetricCard
+                    title="LECO1 Products"
+                    value={stockData.leco1Products}
+                    change="Updated 1 hr ago"
+                    icon={<InventoryIcon sx={{ color: 'white' }} />}
+                    color="success"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <MetricCard
+                    title="LECO2 Products"
+                    value={stockData.leco2Products}
+                    change="Updated 1 hr ago"
+                    icon={<InventoryIcon sx={{ color: 'white' }} />}
+                    color="warning"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <MetricCard
-                  title="LECO1 Products"
-                  value={stockData.leco1Products}
-                  change="Updated 1 hr ago"
-                  icon={<InventoryIcon sx={{ color: 'white' }} />}
-                  color="success"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <MetricCard
-                  title="LECO2 Products"
-                  value={stockData.leco2Products}
-                  change="Updated 1 hr ago"
-                  icon={<InventoryIcon sx={{ color: 'white' }} />}
-                  color="warning"
-                />
-              </Grid>
-            </Grid>
+            )}
             <Grid container spacing={3}>
               <Grid item xs={12} md={8}>
                 <EfficiencyChart />
@@ -843,9 +852,8 @@ export default function DashboardLayoutBasic(props) {
       branding={{ title: 'Galigamuwa Meter Manufacturing', logo: '' }}
     >
       <CustomDashboardLayout>
-        
         <PageContainer>
-          <DynamicBreadcrumbs pathname={router.pathname} navigation={NAVIGATION} router={router} />
+         
           {renderContent()}
         </PageContainer>
       </CustomDashboardLayout>
