@@ -849,7 +849,7 @@ export default function DashboardLayoutBasic(props) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
-      branding={{ title: 'Galigamuwa Meter Manufacturing', logo: '' }}
+      branding={{ title: 'Galigamuwa Meter Enclosure Manufacturing Plant', logo: '' }}
     >
       <CustomDashboardLayout>
         <PageContainer>
