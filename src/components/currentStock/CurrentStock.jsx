@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaBox, FaCog, FaCubes, FaThumbtack, FaTv, FaSearch, FaFilter, FaSortAmountDownAlt, FaExclamationTriangle, FaChevronDown } from "react-icons/fa";
+import { FaBox, FaCog, FaCubes, FaThumbtack, FaTv, FaSearch, FaFilter, FaSortAmountDownAlt, FaExclamationTriangle, FaChevronDown, FaBell } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./currentStock.scss";
+import "./CurrentStock.scss";
 
 const API_BASE_URL = "/api";
 
@@ -48,6 +48,8 @@ const CurrentStock = () => {
   const [lowStockFilter, setLowStockFilter] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [lowStockItems, setLowStockItems] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const contentRef = useRef(null);
 
   // Check if content is scrollable
@@ -86,6 +88,9 @@ const CurrentStock = () => {
         }));
         setItems(formattedItems);
         setFilteredItems(formattedItems);
+        // Set low stock items for notifications
+        const lowStock = formattedItems.filter(item => item.quantity < 700);
+        setLowStockItems(lowStock);
         setLoading(false);
         setRefreshing(false);
       } catch (error) {
@@ -161,8 +166,20 @@ const CurrentStock = () => {
   return (
     <div className="ios-stock-container">
       <div className="ios-header">
-        <h1 className="ios-title">Inventory</h1>
-        <p className="ios-subtitle">Current stock levels</p>
+        <div className="ios-header-content">
+          <h1 className="ios-title">Inventory</h1>
+          <p className="ios-subtitle">Current stock levels</p>
+        </div>
+        <button 
+          className="ios-notifications-button"
+          onClick={() => setShowNotifications(true)}
+        >
+          <FaBell />
+          {lowStockItems.length > 0 && (
+            <span className="ios-notifications-badge">{lowStockItems.length}</span>
+          )}
+          Notifications
+        </button>
       </div>
 
       <div className="ios-search-container">
@@ -338,6 +355,56 @@ const CurrentStock = () => {
           </motion.div>
         )}
       </motion.div>
+
+      {/* Notifications Modal */}
+      <AnimatePresence>
+        {showNotifications && (
+          <motion.div
+            className="ios-notifications-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="ios-notifications-modal-content"
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="ios-notifications-modal-header">
+                <h2>Notifications</h2>
+                <button
+                  className="ios-notifications-modal-close"
+                  onClick={() => setShowNotifications(false)}
+                >
+                  Close
+                </button>
+              </div>
+              {lowStockItems.length > 0 ? (
+                <div className="ios-low-stock-notifications">
+                  <h3>Low Stock Warnings</h3>
+                  <p>The following items have stock levels below 700 units:</p>
+                  <ul>
+                    {lowStockItems.map(item => (
+                      <li key={item.id}>
+                        <FaExclamationTriangle className="ios-low-stock-notification-icon" />
+                        {item.name}: {item.quantity} units
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div className="ios-no-notifications">
+                  <h3>No Notifications</h3>
+                  <p>All stock levels are above 700 units.</p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <button 
         className={`ios-refresh-button ${refreshing ? 'refreshing' : ''}`}
