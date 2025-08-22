@@ -13,6 +13,7 @@ import DefectiveCrushed from "./components/DefectiveCrushing/DefectiveCrushing";
 import AssemblySummary from "./components/AssemblyLine/AssemblySummary";
 import DeliveryNote from "./components/DeliveryNote/DeliveryNote";
 import DispatchSummary from "./components/DispatchSummary/DispatchSummary";
+import RawMaterialDashboard from "./components/RawMaterial";
 
 // Lazy-loaded components
 const Login = lazy(() => import("./pages/Login/Login"));
@@ -56,6 +57,10 @@ const App = () => {
           <Route
             path="/assemblysummary"
             element={<ProtectedRoute element={<AssemblySummary />} />}
+          />
+           <Route
+            path="/rawmaterial"
+            element={<ProtectedRoute element={<RawMaterialDashboard />} />}
           />
           <Route
             path="/defective"
