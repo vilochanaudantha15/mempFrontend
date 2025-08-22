@@ -13,6 +13,9 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import FactoryIcon from '@mui/icons-material/Factory';
 
+// Define API base URL
+const API_BASE_URL = "/api";
+
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -182,7 +185,7 @@ const RawMaterialDashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:3000/api/production-shift/raw-material-averages?upToDate=${upToDate}`, {
+      const response = await fetch(`${API_BASE_URL}/production-shift/raw-material-averages?upToDate=${upToDate}`, {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) {
@@ -212,7 +215,7 @@ const RawMaterialDashboard = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:3000/api/production-shift/received-averages?upToDate=${upToDate}`, {
+      const response = await fetch(`${API_BASE_URL}/production-shift/received-averages?upToDate=${upToDate}`, {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) {
