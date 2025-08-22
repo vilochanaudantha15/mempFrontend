@@ -18,6 +18,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const GlassAppBar = styled(AppBar)(({ theme }) => ({
   background: `linear-gradient(
@@ -153,6 +154,7 @@ export default function DashboardNavbar() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [userData, setUserData] = React.useState(null);
   const [errorMessage, setErrorMessage] = React.useState('');
+  const navigate = useNavigate();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -201,6 +203,10 @@ export default function DashboardNavbar() {
       console.error('Failed to clear session storage:', error);
       setErrorMessage('Failed to sign out. Please try again.');
     }
+  };
+
+  const handleReportsClick = () => {
+    navigate('/rawmaterial');
   };
 
   const menuId = 'primary-search-account-menu';
@@ -383,7 +389,7 @@ export default function DashboardNavbar() {
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
             <NavButton color="inherit">Overview</NavButton>
             <NavButton color="inherit">Analytics</NavButton>
-            <NavButton color="inherit">Reports</NavButton>
+            <NavButton color="inherit" onClick={handleReportsClick}>Reports</NavButton>
             <NavButton color="inherit">Settings</NavButton>
           </Box>
 
