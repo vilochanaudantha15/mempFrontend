@@ -37,7 +37,6 @@ const AssemblySummary = () => {
     assembledItems: {
       ceb: { quantity: "", qcNoStart: "", qcNoEnd: "" },
       leco1: { quantity: "", qcNoStart: "", qcNoEnd: "" },
-      leco2: { quantity: "", qcNoStart: "", qcNoEnd: "" },
     },
   });
 
@@ -241,7 +240,6 @@ const AssemblySummary = () => {
         assembledItems: {
           ceb: { quantity: "", qcNoStart: "", qcNoEnd: "" },
           leco1: { quantity: "", qcNoStart: "", qcNoEnd: "" },
-          leco2: { quantity: "", qcNoStart: "", qcNoEnd: "" },
         },
       });
       setIsReceivedPopupOpen(false);
@@ -321,7 +319,6 @@ const AssemblySummary = () => {
       const aggregated = {
         ceb: { quantity: 0, qcNoStart: "", qcNoEnd: "" },
         leco1: { quantity: 0, qcNoStart: "", qcNoEnd: "" },
-        leco2: { quantity: 0, qcNoStart: "", qcNoEnd: "" },
       };
 
       reports.forEach((report) => {
@@ -403,20 +400,6 @@ const AssemblySummary = () => {
               </td>
               <td className="report-table__cell">
                 {aggregatedData.leco1.qcNoEnd || "-"}
-              </td>
-            </tr>
-            <tr className="report-table__row">
-              <td className="report-table__cell">LECO (2)</td>
-              <td className="report-table__cell">
-                {aggregatedData.leco2.quantity !== undefined && aggregatedData.leco2.quantity !== null
-                  ? Number(aggregatedData.leco2.quantity).toFixed(0)
-                  : "-"}
-              </td>
-              <td className="report-table__cell">
-                {aggregatedData.leco2.qcNoStart || "-"}
-              </td>
-              <td className="report-table__cell">
-                {aggregatedData.leco2.qcNoEnd || "-"}
               </td>
             </tr>
           </tbody>
@@ -585,7 +568,6 @@ const AssemblySummary = () => {
                     <>
                       {renderAssembledItemRow("CEB", "ceb")}
                       {renderAssembledItemRow("LECO (1)", "leco1")}
-                      {renderAssembledItemRow("LECO (2)", "leco2")}
                     </>
                   ) : (
                     <>
