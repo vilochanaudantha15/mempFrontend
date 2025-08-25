@@ -532,7 +532,6 @@ function EfficiencyChart() {
             <Legend />
             <Bar dataKey="cebQuantity" fill="#6366F1" name="CEB Quantity" radius={[4, 4, 0, 0]} />
             <Bar dataKey="leco1Quantity" fill="#10B981" name="LECO1 Quantity" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="leco2Quantity" fill="#F59E0B" name="LECO2 Quantity" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -849,11 +848,10 @@ export default function DashboardLayoutBasic(props) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
-      branding={{ title: 'Galigamuwa Meter Enclosure Manufacturing Plant', logo: '' }}
+      branding={{ title: 'Galigamuwa Meter Manufacturing', logo: '' }}
     >
       <CustomDashboardLayout>
         <PageContainer>
-         
           {renderContent()}
         </PageContainer>
       </CustomDashboardLayout>
