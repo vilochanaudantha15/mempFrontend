@@ -454,7 +454,7 @@ const MetricCard = ({ title, value, change, icon, color }) => {
   );
 };
 
-// Chart Component
+// Chart Component for Assembled Products
 function EfficiencyChart() {
   const [chartData, setChartData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -532,6 +532,97 @@ function EfficiencyChart() {
             <Legend />
             <Bar dataKey="cebQuantity" fill="#6366F1" name="CEB Quantity" radius={[4, 4, 0, 0]} />
             <Bar dataKey="leco1Quantity" fill="#10B981" name="LECO1 Quantity" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="leco2Quantity" fill="#F59E0B" name="LECO2 Quantity" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
+  );
+}
+
+// New Chart Component for Daily Production of Covers, Bases, and Shutters
+function DailyProductionChart() {
+  const [chartData, setChartData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const fetchData = async () => {
+      setLoading(true);
+      setErrorMessage('');
+      try {
+        const upToDate = new Date().toISOString().split('T')[0];
+        const response = await axios.get(`${API_BASE_URL}/production-shift/daily-production`, {
+          params: { upToDate },
+          signal: controller.signal,
+        });
+        console.log('DailyProductionChart API Response:', response.data);
+        const data = Array.isArray(response.data) ? response.data.map((item) => ({
+          date: new Date(item.date).toLocaleDateString(),
+          cebCoversQty: item.cebCoversQty || 0,
+          lecoCoversQty: item.lecoCoversQty || 0,
+          baseQty: item.baseQty || 0,
+          shuttersQty: item.shuttersQty || 0,
+        })) : [];
+        setChartData(data);
+        setErrorMessage('');
+      } catch (error) {
+        if (axios.isCancel(error)) return;
+        console.error('Error fetching daily production data:', error);
+        setErrorMessage(error.response?.data?.message || 'Failed to fetch daily production data. Please check the server connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    return () => controller.abort();
+  }, []);
+
+  if (errorMessage) {
+    return (
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'error.main',
+          textAlign: 'center',
+          p: 2,
+          background: alpha('#ff0000', 0.1),
+          borderRadius: '14px',
+        }}
+      >
+        {errorMessage}
+      </Typography>
+    );
+  }
+
+  if (loading) {
+    return <Typography>Loading daily production data...</Typography>;
+  }
+
+  return (
+    <Card sx={{ p: 3 }}>
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+        Daily Production of Components
+      </Typography>
+      <div style={{ height: '400px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.06)" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <ChartTooltip
+              contentStyle={{
+                ...glassEffect,
+                borderRadius: '12px',
+                border: 'none',
+              }}
+            />
+            <Legend />
+            <Bar dataKey="cebCoversQty" fill="#6366F1" name="CEB Covers" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="lecoCoversQty" fill="#10B981" name="LECO Covers" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="baseQty" fill="#F59E0B" name="Base" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="shuttersQty" fill="#EF4444" name="Shutters" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -794,6 +885,9 @@ export default function DashboardLayoutBasic(props) {
                     </Box>
                   ))}
                 </Card>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <DailyProductionChart />
               </Grid>
               <Grid item xs={12}>
                 <Analytics />
