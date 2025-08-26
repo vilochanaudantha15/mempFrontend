@@ -31,6 +31,9 @@ import {
   Tooltip as ChartTooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -630,6 +633,121 @@ function DailyProductionChart() {
   );
 }
 
+// New Pie Chart Component for Previous Day Dispatch
+function DispatchPieChart() {
+  const [chartData, setChartData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const fetchData = async () => {
+      setLoading(true);
+      setErrorMessage('');
+      try {
+        const response = await axios.get(`${API_BASE_URL}/shift-dispatch/previous-day`, {
+          signal: controller.signal,
+        });
+        console.log('DispatchPieChart API Response:', response.data);
+        const data = Array.isArray(response.data)
+          ? response.data
+              .filter(item => item.customer && item.totalQuantity)
+              .map((item) => ({
+                name: item.customer,
+                value: parseInt(item.totalQuantity, 10) || 0,
+              }))
+          : [];
+        setChartData(data);
+        setErrorMessage('');
+      } catch (error) {
+        if (axios.isCancel(error)) return;
+        console.error('Error fetching previous day dispatch data:', error);
+        setErrorMessage(error.response?.data?.message || 'Failed to fetch dispatch data. Please check the server connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    return () => controller.abort();
+  }, []);
+
+  if (errorMessage) {
+    return (
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'error.main',
+          textAlign: 'center',
+          p: 2,
+          background: alpha('#ff0000', 0.1),
+          borderRadius: '14px',
+        }}
+      >
+        {errorMessage}
+      </Typography>
+    );
+  }
+
+  if (loading) {
+    return <Typography>Loading dispatch data...</Typography>;
+  }
+
+  if (chartData.length === 0) {
+    return (
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'text.secondary',
+          textAlign: 'center',
+          p: 2,
+          borderRadius: '14px',
+        }}
+      >
+        No dispatch data available for the previous day.
+      </Typography>
+    );
+  }
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28FFF', '#FF66A1', '#6366F1', '#10B981', '#F59E0B', '#EF4444'];
+
+  return (
+    <Card sx={{ p: 3, minHeight: '400px' }}>
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+        Previous Day Dispatch by Customer
+      </Typography>
+      <div style={{ height: '400px', width: '100%' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              labelLine={true}
+              label={({ name, value, percent }) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+              outerRadius={120}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <ChartTooltip
+              contentStyle={{
+                ...glassEffect,
+                borderRadius: '12px',
+                border: 'none',
+              }}
+              formatter={(value, name, props) => [`${value}`, props.payload.name]}
+            />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
+  );
+}
+
 function useDemoRouter(initialPath, navigate) {
   const [pathname, setPathname] = React.useState(initialPath || '/dashboard');
 
@@ -790,7 +908,7 @@ export default function DashboardLayoutBasic(props) {
   const NAVIGATION = getNavigation();
 
   const renderContent = () => {
-    console.log('Rendering dashboard with stockData:', stockData); // Debug log
+    console.log('Rendering dashboard with stockData:', stockData);
     const normalizedPath = router.pathname.replace(/\/$/, '');
     switch (normalizedPath) {
       case '/dashboard':
@@ -886,8 +1004,11 @@ export default function DashboardLayoutBasic(props) {
                   ))}
                 </Card>
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={6}>
                 <DailyProductionChart />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <DispatchPieChart />
               </Grid>
               <Grid item xs={12}>
                 <Analytics />
