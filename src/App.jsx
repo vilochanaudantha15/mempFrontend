@@ -14,6 +14,7 @@ import AssemblySummary from "./components/AssemblyLine/AssemblySummary";
 import DeliveryNote from "./components/DeliveryNote/DeliveryNote";
 import DispatchSummary from "./components/DispatchSummary/DispatchSummary";
 import RawMaterialDashboard from "./components/RawMaterial";
+import SriLankaMap from "./components/map";
 
 // Lazy-loaded components
 const Login = lazy(() => import("./pages/Login/Login"));
@@ -70,6 +71,10 @@ const App = () => {
             path="/calendar"
             element={<ProtectedRoute element={<CalendarScheduler />} />}
           />
+           <Route
+            path="/map"
+            element={<ProtectedRoute element={<SriLankaMap />} />}
+            />
           <Route
             path="/profile"
             element={<ProtectedRoute element={<ProfileCard />} />}
