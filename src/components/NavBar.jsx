@@ -9,7 +9,6 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
@@ -205,8 +204,21 @@ export default function DashboardNavbar() {
     }
   };
 
+  // 🔹 Navigation handlers
   const handleReportsClick = () => {
     navigate('/rawmaterial');
+  };
+
+  const handleMapClick = () => {
+    navigate('/map');
+  };
+
+  const handleOverviewClick = () => {
+    navigate('/overview');
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   const menuId = 'primary-search-account-menu';
@@ -386,11 +398,12 @@ export default function DashboardNavbar() {
             </Typography>
           </motion.div>
 
+          {/* 🔹 Navigation buttons */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
-            <NavButton color="inherit">Overview</NavButton>
-            <NavButton color="inherit">Analytics</NavButton>
+            <NavButton color="inherit" onClick={handleOverviewClick}>Overview</NavButton>
+            <NavButton color="inherit" onClick={handleMapClick}>Map</NavButton>
             <NavButton color="inherit" onClick={handleReportsClick}>Reports</NavButton>
-            <NavButton color="inherit">Settings</NavButton>
+            <NavButton color="inherit" onClick={handleSettingsClick}>Settings</NavButton>
           </Box>
 
           <ModernSearch>
@@ -405,6 +418,7 @@ export default function DashboardNavbar() {
 
           <Box sx={{ flexGrow: 1 }} />
 
+          {/* Right side icons and user */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
             <IconButton
               size="large"
@@ -493,6 +507,7 @@ export default function DashboardNavbar() {
             )}
           </Box>
 
+          {/* Mobile menu button */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
